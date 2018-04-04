@@ -5,8 +5,8 @@ using namespace std;
 template <class T>
 struct Node {
 	T value;
-	Node *left=nullptr;
-	Node *right=nullptr;
+	Node *left=NULL;
+	Node *right=NULL;
 
 	Node(T val) {
 		this->value = val;
@@ -24,6 +24,8 @@ class BST {
 
 private:
 	Node<T> *root;
+	T* inOrder;
+	int count;
 
 	void addHelper(Node<T> *root, T val) {
 		if (root->value > val) {
@@ -55,7 +57,7 @@ private:
 		if (!root) return 0;
 		else return 1 + nodesCountHelper(root->left) + nodesCountHelper(root->right);
 	}
-
+	
 	int heightHelper(Node<T> *root) {
 		if (!root) return 0;
 		else return 1 + max(heightHelper(root->left), heightHelper(root->right));
@@ -84,7 +86,7 @@ private:
 	bool deleteValueHelper(Node<T>* parent, Node<T>* current, T value) {
 		if (!current) return false;
 		if (current->value == value) {
-			if (current->left == nullptr || current->right == nullptr) {
+			if (current->left == NULL || current->right == NULL) {
 				Node<T>* temp = current->left;
 				if (current->right) temp = current->right;
 				if (parent) {
@@ -133,6 +135,14 @@ private:
 			return getHighestHelper(root->right);
 		}
 	}
+	void getInOrderHelper(Node<T> *root){
+		if (!root) return;
+		getInOrderHelper(root->left);
+		inOrder[count]=root->value;
+		cout<<count<<endl;
+		count++;
+		getInOrderHelper(root->right);
+	}
 
 public:
 	void add(T val) {
@@ -161,9 +171,14 @@ public:
 	}
 
 	bool deleteValue(T value) {
-		return this->deleteValueHelper(nullptr, this->root, value);
+		return this->deleteValueHelper(NULL, this->root, value);
 	}
 	T getLowest() {
+		
+		
+		
+		
+		
 		if (root) {
 			return this->getLowestHelper(root);
 		}
@@ -178,6 +193,12 @@ public:
 		else {
 			return 0;
 		}
+	}
+	T* getInorder(){
+		inOrder=new T[nodesCount()];
+		count=0;
+		getInOrderHelper(root);
+		return inOrder;
 	}
 
 };
@@ -201,7 +222,10 @@ int main() {
 	cout << endl;
 	cout << "lowest " << bst->getLowest() << endl;
 	cout << "Highest " << bst->getHighest() << endl;
-
+	int* temp=bst->getInorder();
+	for(int i=0;i<sizeof(temp)-2;i++){
+		cout<<temp[i]<<endl;
+	}
 	bst->deleteValue(11);
 	cout << "11 removed: ";
 	bst->print();
